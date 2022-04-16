@@ -10,10 +10,24 @@ namespace Jotunn.Entities
     /// </summary>
     public class CustomItem : CustomEntity
     {
+        private GameObject _ItemPrefab;
+
         /// <summary>
         ///     The prefab for this custom item.
         /// </summary>
-        public GameObject ItemPrefab { get; }
+        public GameObject ItemPrefab
+        {
+            get
+            {
+                return _ItemPrefab;
+            }
+
+            private set
+            {
+                _ItemPrefab = value;
+                originalItemPrefabName = value.name;
+            }
+        }
 
         /// <summary>
         ///     The <see cref="global::ItemDrop"/> component for this custom item as a shortcut.
@@ -35,6 +49,8 @@ namespace Jotunn.Entities
         ///     Indicator if references from configs should get replaced
         /// </summary>
         internal bool FixConfig { get; set; }
+
+        private string originalItemPrefabName;
 
         /// <summary>
         ///     Custom item from a prefab.<br />
@@ -155,15 +171,18 @@ namespace Jotunn.Entities
                 Logger.LogError($"CustomItem {this} has no prefab");
                 valid = false;
             }
+
             if (!ItemPrefab.IsValid())
             {
                 valid = false;
             }
+
             if (ItemDrop == null)
             {
                 Logger.LogError($"CustomItem {this} has no ItemDrop component");
                 valid = false;
             }
+
             if (Recipe != null && ItemDrop?.m_itemData.m_shared.m_icons.Length == 0)
             {
                 Logger.LogError($"CustomItem {this} has no icon");
@@ -206,7 +225,12 @@ namespace Jotunn.Entities
         /// <inheritdoc/>
         public override string ToString()
         {
-            return ItemPrefab.name;
+            if (ItemPrefab)
+            {
+                return ItemPrefab.name;
+            }
+
+            return originalItemPrefabName;
         }
     }
 }
