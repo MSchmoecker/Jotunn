@@ -118,17 +118,22 @@ jobs:
           msbuild JotunnLib.sln /p:Configuration=Debug
           mv JotunnLib/bin/Debug/net462/Jotunn.dll Jotunn-DEBUG-${{ steps.get_version.outputs.VERSION }}.dll
 
+      - name: Run publish script for creating zips
+        shell: pwsh
+        run: |
+          ./publish.ps1
+
       - name: Upload Nexusmods zip as artifact
         uses: actions/upload-artifact@v2
         with:
           name: Jotunn-${{ steps.get_version.outputs.VERSION }}-Nexusmods.zip
-          path: JotunnLib/_package/Nexusmods/Jotunn-${{ steps.get_version.outputs.VERSION }}.zip
+          path: JotunnLib/_package/Nexusmods/Jotunn-${{ steps.get_version.outputs.VERSION_NUMBER }}.zip
 
       - name: Upload Thunderstore zip as artifact
         uses: actions/upload-artifact@v2
         with:
           name: Jotunn-${{ steps.get_version.outputs.VERSION }}-Thunderstore.zip
-          path: JotunnLib/_package/Thunderstore/Jotunn-${{ steps.get_version.outputs.VERSION }}.zip
+          path: JotunnLib/_package/Thunderstore/Jotunn-${{ steps.get_version.outputs.VERSION_NUMBER }}.zip
 
       - name: Publish to NuGet
         run: |
